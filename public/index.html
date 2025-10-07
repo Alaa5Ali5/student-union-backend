@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج طلب الانضمام - اتحاد الطلاب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .fields-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .field-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .field-checkbox:hover {
+            background: #e9ecef;
+        }
+
+        .field-checkbox input[type="checkbox"] {
+            width: auto;
+        }
+
+        .field-checkbox.checked {
+            background: #e3f2fd;
+            border-color: #4facfe;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-right: 4px solid #c62828;
+            display: none;
+        }
+
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .success-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .success-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .application-id {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ اتحاد الطلاب</h1>
+            <p>نموذج طلب الانضمام</p>
+        </div>
+
+        <div class="form-container">
+            <form id="applicationForm">
+                <div class="form-group">
+                    <label for="fullName">الاسم الكامل *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">رقم الهاتف *</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="09xxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="college">الكلية *</label>
+                    <select id="college" name="college" required>
+                        <option value="">اختر الكلية</option>
+                        <option value="كلية الهندسة المعلوماتية">كلية الهندسة المعلوماتية</option>
+                        <option value="كلية الهندسة المدنية">كلية الهندسة المدنية</option>
+                        <option value="كلية الهندسة الميكانيكية">كلية الهندسة الميكانيكية</option>
+                        <option value="كلية الهندسة الكهربائية">كلية الهندسة الكهربائية</option>
+                        <option value="كلية الطب">كلية الطب</option>
+                        <option value="كلية الصيدلة">كلية الصيدلة</option>
+                        <option value="كلية العلوم">كلية العلوم</option>
+                        <option value="كلية الآداب">كلية الآداب</option>
+                        <option value="كلية الاقتصاد">كلية الاقتصاد</option>
+                        <option value="كلية الحقوق">كلية الحقوق</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization">التخصص *</label>
+                    <input type="text" id="specialization" name="specialization" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="academicYear">السنة الدراسية *</label>
+                    <select id="academicYear" name="academicYear" required>
+                        <option value="">اختر السنة</option>
+                        <option value="1">السنة الأولى</option>
+                        <option value="2">السنة الثانية</option>
+                        <option value="3">السنة الثالثة</option>
+                        <option value="4">السنة الرابعة</option>
+                        <option value="5">السنة الخامسة</option>
+                        <option value="6">السنة السادسة</option>
+                        <option value="7">السنة السابعة</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>المجالات المهتم بها *</label>
+                    <div class="fields-container">
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field1" name="interestedFields" value="تطوير الويب">
+                            <label for="field1">تطوير الويب</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field2" name="interestedFields" value="تطوير التطبيقات">
+                            <label for="field2">تطوير التطبيقات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field3" name="interestedFields" value="الذكاء الاصطناعي">
+                            <label for="field3">الذكاء الاصطناعي</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field4" name="interestedFields" value="أمن المعلومات">
+                            <label for="field4">أمن المعلومات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field5" name="interestedFields" value="قواعد البيانات">
+                            <label for="field5">قواعد البيانات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field6" name="interestedFields" value="الشبكات">
+                            <label for="field6">الشبكات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field7" name="interestedFields" value="الرسوميات">
+                            <label for="field7">الرسوميات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field8" name="interestedFields" value="البرمجة التنافسية">
+                            <label for="field8">البرمجة التنافسية</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hasExperience" name="hasExperience">
+                        <label for="hasExperience">لدي خبرة سابقة في البرمجة</label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="experienceDetailsGroup" style="display: none;">
+                    <label for="experienceDetails">تفاصيل الخبرة</label>
+                    <textarea id="experienceDetails" name="experienceDetails" placeholder="اكتب تفاصيل خبرتك في البرمجة..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="portfolioLinks">روابط أعمالك (اختياري)</label>
+                    <textarea id="portfolioLinks" name="portfolioLinks" placeholder="ضع كل رابط في سطر منفصل..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="equipmentDetails">معداتك التقنية (اختياري)</label>
+                    <textarea id="equipmentDetails" name="equipmentDetails" placeholder="اكتب عن المعدات التقنية التي تملكها..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reasonToJoin">سبب الانضمام *</label>
+                    <textarea id="reasonToJoin" name="reasonToJoin" placeholder="اكتب سبب رغبتك في الانضمام لاتحاد الطلاب..." required></textarea>
+                </div>
+
+                <div class="error-message" id="errorMessage"></div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>جاري إرسال الطلب...</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    إرسال الطلب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">تم إرسال الطلب بنجاح!</h2>
+            <p class="success-message">
+                شكراً لك على اهتمامك بالانضمام لاتحاد الطلاب. 
+                تم استلام طلبك وسيتم مراجعته من قبل الفريق المختص.
+                سنتواصل معك قريباً عبر رقم الهاتف المرفق.
+            </p>
+            <div class="application-id" id="applicationId"></div>
+            <button class="success-btn" onclick="closeSuccessModal()">حسناً</button>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:3000/api/v1';
+
+        // Form elements
+        const form = document.getElementById('applicationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successModal = document.getElementById('successModal');
+        const applicationId = document.getElementById('applicationId');
+        const hasExperienceCheckbox = document.getElementById('hasExperience');
+        const experienceDetailsGroup = document.getElementById('experienceDetailsGroup');
+
+        // Toggle experience details
+        hasExperienceCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                experienceDetailsGroup.style.display = 'block';
+            } else {
+                experienceDetailsGroup.style.display = 'none';
+                document.getElementById('experienceDetails').value = '';
+            }
+        });
+
+        // Handle field checkboxes
+        const fieldCheckboxes = document.querySelectorAll('.field-checkbox');
+        fieldCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Hide error message
+            errorMessage.style.display = 'none';
+            
+            // Show loading
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+
+            try {
+                // Collect form data
+                const formData = new FormData(form);
+                const data = {};
+
+                // Basic fields
+                data.fullName = formData.get('fullName');
+                data.phoneNumber = formData.get('phoneNumber');
+                data.college = formData.get('college');
+                data.specialization = formData.get('specialization');
+                data.academicYear = parseInt(formData.get('academicYear'));
+                data.hasExperience = formData.get('hasExperience') === 'on';
+                data.experienceDetails = formData.get('experienceDetails') || '';
+                data.equipmentDetails = formData.get('equipmentDetails') || '';
+                data.reasonToJoin = formData.get('reasonToJoin');
+
+                // Portfolio links
+                const portfolioLinksText = formData.get('portfolioLinks');
+                data.portfolioLinks = portfolioLinksText ? 
+                    portfolioLinksText.split('\n').filter(link => link.trim()) : [];
+
+                // Interested fields
+                const interestedFields = [];
+                document.querySelectorAll('input[name="interestedFields"]:checked').forEach(checkbox => {
+                    interestedFields.push(checkbox.value);
+                });
+                data.interestedFields = interestedFields;
+
+                // Validate required fields
+                if (!data.fullName || !data.phoneNumber || !data.college || 
+                    !data.specialization || !data.academicYear || 
+                    data.interestedFields.length === 0 || !data.reasonToJoin) {
+                    throw new Error('يرجى ملء جميع الحقول المطلوبة');
+                }
+
+                // Validate phone number format
+                const phoneRegex = /^09\d{8}$/;
+                if (!phoneRegex.test(data.phoneNumber)) {
+                    throw new Error('رقم الهاتف غير صحيح. يجب أن يبدأ بـ 09 ويحتوي على 11 رقم');
+                }
+
+                // Validate reason length
+                if (data.reasonToJoin.length < 20) {
+                    throw new Error('سبب الانضمام يجب أن يكون 20 حرف على الأقل');
+                }
+
+                // Submit application
+                const response = await fetch(`${API_BASE_URL}/applications`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Show success modal
+                    applicationId.textContent = `رقم الطلب: ${result.applicationId}`;
+                    successModal.style.display = 'flex';
+                    
+                    // Reset form
+                    form.reset();
+                    experienceDetailsGroup.style.display = 'none';
+                    fieldCheckboxes.forEach(checkbox => {
+                        checkbox.classList.remove('checked');
+                    });
+                } else {
+                    throw new Error(result.message || 'حدث خطأ أثناء إرسال الطلب');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                // Hide loading
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إرسال الطلب';
+            }
+        });
+
+        // Close success modal
+        function closeSuccessModal() {
+            successModal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+    </script>
+</body>
+</html>

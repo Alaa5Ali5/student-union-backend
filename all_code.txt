@@ -1,0 +1,1921 @@
+﻿### مجلد: D:\project\student-union\student-union-backend
+### مسار نسبي: .
+
+### مجلد: D:\project\student-union\student-union-backend\prisma
+### مسار نسبي: prisma
+
+### مجلد: D:\project\student-union\student-union-backend\public
+### مسار نسبي: public
+
+### مجلد: D:\project\student-union\student-union-backend\src
+### مسار نسبي: src
+
+### مجلد: D:\project\student-union\student-union-backend\prisma\migrations
+### مسار نسبي: prisma\migrations
+
+### مجلد: D:\project\student-union\student-union-backend\prisma\migrations\20250923184539_init_relational
+### مسار نسبي: prisma\migrations\20250923184539_init_relational
+
+### مجلد: D:\project\student-union\student-union-backend\src\config
+### مسار نسبي: src\config
+
+### مجلد: D:\project\student-union\student-union-backend\src\core
+### مسار نسبي: src\core
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules
+### مسار نسبي: src\modules
+
+### مجلد: D:\project\student-union\student-union-backend\src\scripts
+### مسار نسبي: src\scripts
+
+### مجلد: D:\project\student-union\student-union-backend\src\core\middleware
+### مسار نسبي: src\core\middleware
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications
+### مسار نسبي: src\modules\applications
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges
+### مسار نسبي: src\modules\colleges
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users
+### مسار نسبي: src\modules\users
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\api
+### مسار نسبي: src\modules\applications\api
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\controllers
+### مسار نسبي: src\modules\applications\controllers
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\models
+### مسار نسبي: src\modules\applications\models
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\repositories
+### مسار نسبي: src\modules\applications\repositories
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\services
+### مسار نسبي: src\modules\applications\services
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\applications\validators
+### مسار نسبي: src\modules\applications\validators
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\api
+### مسار نسبي: src\modules\colleges\api
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\controllers
+### مسار نسبي: src\modules\colleges\controllers
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\models
+### مسار نسبي: src\modules\colleges\models
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\repositories
+### مسار نسبي: src\modules\colleges\repositories
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\services
+### مسار نسبي: src\modules\colleges\services
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\colleges\validators
+### مسار نسبي: src\modules\colleges\validators
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users\api
+### مسار نسبي: src\modules\users\api
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users\controllers
+### مسار نسبي: src\modules\users\controllers
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users\models
+### مسار نسبي: src\modules\users\models
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users\services
+### مسار نسبي: src\modules\users\services
+
+### مجلد: D:\project\student-union\student-union-backend\src\modules\users\utils
+### مسار نسبي: src\modules\users\utils
+
+### ملف: D:\project\student-union\student-union-backend\.env
+### مسار نسبي: .env
+# Database
+DATABASE_URL="mysql://root:@localhost:3306/student_union_db"
+
+# Server
+PORT=3000
+NODE_ENV=development
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-here-make-it-very-long-and-secure-123456789
+JWT_EXPIRES_IN=7d
+
+# Admin User (for initial setup)
+ADMIN_EMAIL=tartousnuss@gmail.com
+ADMIN_PASSWORD=tartousnuss123456tartousnuss
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\.env.example
+### مسار نسبي: .env.example
+PORT=3000
+MONGO_URI=your_mongodb_connection_string_here
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=90d
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\.gitignore
+### مسار نسبي: .gitignore
+node_modules
+dist
+.env
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\create-user.js
+### مسار نسبي: create-user.js
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+
+const prisma = new PrismaClient();
+
+async function createUser() {
+  try {
+    const email = 'admin@test.com';
+    const password = 'admin123';
+    
+    // حذف المستخدم إذا كان موجوداً
+    await prisma.user.deleteMany({ where: { email } });
+    
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role: 'admin'
+      }
+    });
+    
+    console.log('✅ Admin created:', user.email);
+    console.log('Password:', password);
+    console.log('User ID:', user.id);
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+createUser();
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\package.json
+### مسار نسبي: package.json
+{
+  "name": "student-union-backend",
+  "version": "1.0.0",
+  "description": "Backend API for the Student Union application",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:seed": "ts-node src/scripts/seedFields.ts",  
+    "create-admin": "ts-node src/scripts/createAdmin.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.14.2",
+    "prisma": "^6.16.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\tsconfig.json
+### مسار نسبي: tsconfig.json
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+  }
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\prisma\schema.prisma
+### مسار نسبي: prisma\schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.lyd/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ======================================
+//          نماذج قاعدة البيانات
+// ======================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model College {
+  id              String           @id @default(cuid())
+  name            String           @unique
+  specializations Specialization[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Specialization {
+  id        String  @id @default(cuid())
+  name      String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  collegeId String
+}
+
+// -- التعديل هنا: إنشاء نموذج للمجالات --
+model Field {
+  id           String        @id @default(cuid())
+  name         String        @unique // مثل: 'التصوير الفوتوغرافي والفيديو'
+  applications Application[] // علاقة Many-to-Many
+}
+
+model Application {
+  id                String          @id @default(cuid())
+  fullName          String
+  phoneNumber       String          @unique
+  college           String
+  specialization    String
+  academicYear      Int
+  
+  // -- التعديل هنا: استبدال المصفوفة بعلاقة Many-to-Many --
+  interestedFields  Field[]
+
+  hasExperience     Boolean
+  experienceDetails String?
+  
+  // -- التعديل هنا: استبدال المصفوفة بعلاقة One-to-Many --
+  portfolioLinks    PortfolioLink[]
+
+  equipmentDetails  String?
+  reasonToJoin      String
+  status            String          @default("pending")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+// -- التعديل هنا: إنشاء نموذج لروابط الأعمال --
+model PortfolioLink {
+  id            String      @id @default(cuid())
+  url           String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+}
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\prisma\migrations\migration_lock.toml
+### مسار نسبي: prisma\migrations\migration_lock.toml
+# Please do not edit this file manually
+# It should be added in your version-control system (e.g., Git)
+provider = "mysql"
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\prisma\migrations\20250923184539_init_relational\migration.sql
+### مسار نسبي: prisma\migrations\20250923184539_init_relational\migration.sql
+-- CreateTable
+CREATE TABLE `User` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `role` VARCHAR(191) NOT NULL DEFAULT 'admin',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `College` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `College_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Specialization` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `collegeId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Field` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `Field_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Application` (
+    `id` VARCHAR(191) NOT NULL,
+    `fullName` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NOT NULL,
+    `college` VARCHAR(191) NOT NULL,
+    `specialization` VARCHAR(191) NOT NULL,
+    `academicYear` INTEGER NOT NULL,
+    `hasExperience` BOOLEAN NOT NULL,
+    `experienceDetails` VARCHAR(191) NULL,
+    `equipmentDetails` VARCHAR(191) NULL,
+    `reasonToJoin` VARCHAR(191) NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Application_phoneNumber_key`(`phoneNumber`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PortfolioLink` (
+    `id` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `applicationId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `_ApplicationToField` (
+    `A` VARCHAR(191) NOT NULL,
+    `B` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `_ApplicationToField_AB_unique`(`A`, `B`),
+    INDEX `_ApplicationToField_B_index`(`B`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Specialization` ADD CONSTRAINT `Specialization_collegeId_fkey` FOREIGN KEY (`collegeId`) REFERENCES `College`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PortfolioLink` ADD CONSTRAINT `PortfolioLink_applicationId_fkey` FOREIGN KEY (`applicationId`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_ApplicationToField` ADD CONSTRAINT `_ApplicationToField_A_fkey` FOREIGN KEY (`A`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_ApplicationToField` ADD CONSTRAINT `_ApplicationToField_B_fkey` FOREIGN KEY (`B`) REFERENCES `Field`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\public\index.html
+### مسار نسبي: public\index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج طلب الانضمام - اتحاد الطلاب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .fields-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .field-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .field-checkbox:hover {
+            background: #e9ecef;
+        }
+
+        .field-checkbox input[type="checkbox"] {
+            width: auto;
+        }
+
+        .field-checkbox.checked {
+            background: #e3f2fd;
+            border-color: #4facfe;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-right: 4px solid #c62828;
+            display: none;
+        }
+
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .success-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .success-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .application-id {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ اتحاد الطلاب</h1>
+            <p>نموذج طلب الانضمام</p>
+        </div>
+
+        <div class="form-container">
+            <form id="applicationForm">
+                <div class="form-group">
+                    <label for="fullName">الاسم الكامل *</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">رقم الهاتف *</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="09xxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="college">الكلية *</label>
+                    <select id="college" name="college" required>
+                        <option value="">اختر الكلية</option>
+                        <option value="كلية الهندسة المعلوماتية">كلية الهندسة المعلوماتية</option>
+                        <option value="كلية الهندسة المدنية">كلية الهندسة المدنية</option>
+                        <option value="كلية الهندسة الميكانيكية">كلية الهندسة الميكانيكية</option>
+                        <option value="كلية الهندسة الكهربائية">كلية الهندسة الكهربائية</option>
+                        <option value="كلية الطب">كلية الطب</option>
+                        <option value="كلية الصيدلة">كلية الصيدلة</option>
+                        <option value="كلية العلوم">كلية العلوم</option>
+                        <option value="كلية الآداب">كلية الآداب</option>
+                        <option value="كلية الاقتصاد">كلية الاقتصاد</option>
+                        <option value="كلية الحقوق">كلية الحقوق</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization">التخصص *</label>
+                    <input type="text" id="specialization" name="specialization" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="academicYear">السنة الدراسية *</label>
+                    <select id="academicYear" name="academicYear" required>
+                        <option value="">اختر السنة</option>
+                        <option value="1">السنة الأولى</option>
+                        <option value="2">السنة الثانية</option>
+                        <option value="3">السنة الثالثة</option>
+                        <option value="4">السنة الرابعة</option>
+                        <option value="5">السنة الخامسة</option>
+                        <option value="6">السنة السادسة</option>
+                        <option value="7">السنة السابعة</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>المجالات المهتم بها *</label>
+                    <div class="fields-container">
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field1" name="interestedFields" value="تطوير الويب">
+                            <label for="field1">تطوير الويب</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field2" name="interestedFields" value="تطوير التطبيقات">
+                            <label for="field2">تطوير التطبيقات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field3" name="interestedFields" value="الذكاء الاصطناعي">
+                            <label for="field3">الذكاء الاصطناعي</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field4" name="interestedFields" value="أمن المعلومات">
+                            <label for="field4">أمن المعلومات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field5" name="interestedFields" value="قواعد البيانات">
+                            <label for="field5">قواعد البيانات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field6" name="interestedFields" value="الشبكات">
+                            <label for="field6">الشبكات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field7" name="interestedFields" value="الرسوميات">
+                            <label for="field7">الرسوميات</label>
+                        </div>
+                        <div class="field-checkbox">
+                            <input type="checkbox" id="field8" name="interestedFields" value="البرمجة التنافسية">
+                            <label for="field8">البرمجة التنافسية</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hasExperience" name="hasExperience">
+                        <label for="hasExperience">لدي خبرة سابقة في البرمجة</label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="experienceDetailsGroup" style="display: none;">
+                    <label for="experienceDetails">تفاصيل الخبرة</label>
+                    <textarea id="experienceDetails" name="experienceDetails" placeholder="اكتب تفاصيل خبرتك في البرمجة..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="portfolioLinks">روابط أعمالك (اختياري)</label>
+                    <textarea id="portfolioLinks" name="portfolioLinks" placeholder="ضع كل رابط في سطر منفصل..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="equipmentDetails">معداتك التقنية (اختياري)</label>
+                    <textarea id="equipmentDetails" name="equipmentDetails" placeholder="اكتب عن المعدات التقنية التي تملكها..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reasonToJoin">سبب الانضمام *</label>
+                    <textarea id="reasonToJoin" name="reasonToJoin" placeholder="اكتب سبب رغبتك في الانضمام لاتحاد الطلاب..." required></textarea>
+                </div>
+
+                <div class="error-message" id="errorMessage"></div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>جاري إرسال الطلب...</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    إرسال الطلب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">تم إرسال الطلب بنجاح!</h2>
+            <p class="success-message">
+                شكراً لك على اهتمامك بالانضمام لاتحاد الطلاب. 
+                تم استلام طلبك وسيتم مراجعته من قبل الفريق المختص.
+                سنتواصل معك قريباً عبر رقم الهاتف المرفق.
+            </p>
+            <div class="application-id" id="applicationId"></div>
+            <button class="success-btn" onclick="closeSuccessModal()">حسناً</button>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:3000/api/v1';
+
+        // Form elements
+        const form = document.getElementById('applicationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successModal = document.getElementById('successModal');
+        const applicationId = document.getElementById('applicationId');
+        const hasExperienceCheckbox = document.getElementById('hasExperience');
+        const experienceDetailsGroup = document.getElementById('experienceDetailsGroup');
+
+        // Toggle experience details
+        hasExperienceCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                experienceDetailsGroup.style.display = 'block';
+            } else {
+                experienceDetailsGroup.style.display = 'none';
+                document.getElementById('experienceDetails').value = '';
+            }
+        });
+
+        // Handle field checkboxes
+        const fieldCheckboxes = document.querySelectorAll('.field-checkbox');
+        fieldCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Hide error message
+            errorMessage.style.display = 'none';
+            
+            // Show loading
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+
+            try {
+                // Collect form data
+                const formData = new FormData(form);
+                const data = {};
+
+                // Basic fields
+                data.fullName = formData.get('fullName');
+                data.phoneNumber = formData.get('phoneNumber');
+                data.college = formData.get('college');
+                data.specialization = formData.get('specialization');
+                data.academicYear = parseInt(formData.get('academicYear'));
+                data.hasExperience = formData.get('hasExperience') === 'on';
+                data.experienceDetails = formData.get('experienceDetails') || '';
+                data.equipmentDetails = formData.get('equipmentDetails') || '';
+                data.reasonToJoin = formData.get('reasonToJoin');
+
+                // Portfolio links
+                const portfolioLinksText = formData.get('portfolioLinks');
+                data.portfolioLinks = portfolioLinksText ? 
+                    portfolioLinksText.split('\n').filter(link => link.trim()) : [];
+
+                // Interested fields
+                const interestedFields = [];
+                document.querySelectorAll('input[name="interestedFields"]:checked').forEach(checkbox => {
+                    interestedFields.push(checkbox.value);
+                });
+                data.interestedFields = interestedFields;
+
+                // Validate required fields
+                if (!data.fullName || !data.phoneNumber || !data.college || 
+                    !data.specialization || !data.academicYear || 
+                    data.interestedFields.length === 0 || !data.reasonToJoin) {
+                    throw new Error('يرجى ملء جميع الحقول المطلوبة');
+                }
+
+                // Validate phone number format
+                const phoneRegex = /^09\d{8}$/;
+                if (!phoneRegex.test(data.phoneNumber)) {
+                    throw new Error('رقم الهاتف غير صحيح. يجب أن يبدأ بـ 09 ويحتوي على 11 رقم');
+                }
+
+                // Validate reason length
+                if (data.reasonToJoin.length < 20) {
+                    throw new Error('سبب الانضمام يجب أن يكون 20 حرف على الأقل');
+                }
+
+                // Submit application
+                const response = await fetch(`${API_BASE_URL}/applications`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Show success modal
+                    applicationId.textContent = `رقم الطلب: ${result.applicationId}`;
+                    successModal.style.display = 'flex';
+                    
+                    // Reset form
+                    form.reset();
+                    experienceDetailsGroup.style.display = 'none';
+                    fieldCheckboxes.forEach(checkbox => {
+                        checkbox.classList.remove('checked');
+                    });
+                } else {
+                    throw new Error(result.message || 'حدث خطأ أثناء إرسال الطلب');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                // Hide loading
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إرسال الطلب';
+            }
+        });
+
+        // Close success modal
+        function closeSuccessModal() {
+            successModal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                closeSuccessModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\public\README.md
+### مسار نسبي: public\README.md
+# نظام طلب الانضمام لاتحاد الطلاب
+
+## المميزات
+
+✅ **نموذج تفاعلي كامل** - نموذج طلب الانضمام مع واجهة مستخدم جذابة  
+✅ **رسالة نجاح واضحة** - مربع نجاح يظهر عند إرسال الطلب بنجاح  
+✅ **التحقق من البيانات** - تحقق شامل من صحة البيانات المدخلة  
+✅ **تصميم متجاوب** - يعمل على جميع الأجهزة والشاشات  
+✅ **دعم اللغة العربية** - واجهة باللغة العربية مع دعم RTL  
+
+## كيفية الاستخدام
+
+1. **تشغيل الخادم:**
+   ```bash
+   npm run dev
+   ```
+
+2. **فتح النموذج:**
+   - افتح المتصفح واذهب إلى: `http://localhost:3000`
+   - أو `http://localhost:3000/index.html`
+
+3. **ملء النموذج:**
+   - املأ جميع الحقول المطلوبة (المميزة بـ *)
+   - اختر المجالات المهتم بها
+   - اكتب سبب الانضمام (20 حرف على الأقل)
+
+4. **إرسال الطلب:**
+   - اضغط على "إرسال الطلب"
+   - ستظهر رسالة نجاح مع رقم الطلب
+
+## المميزات التقنية
+
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+- **Backend:** Node.js, Express.js, TypeScript
+- **Database:** MySQL مع Prisma ORM
+- **Validation:** Zod للتحقق من البيانات
+- **CORS:** مفعل للسماح بالطلبات من الواجهة الأمامية
+
+## رسائل النجاح
+
+عند إرسال الطلب بنجاح، سيظهر:
+- ✅ أيقونة نجاح
+- 📝 رسالة تأكيد واضحة
+- 🆔 رقم الطلب المرجعي
+- 🔄 إمكانية إغلاق المربع والبدء من جديد
+
+## معالجة الأخطاء
+
+النظام يتعامل مع:
+- ❌ البيانات المكررة (رقم الهاتف)
+- ❌ البيانات الناقصة
+- ❌ تنسيق رقم الهاتف الخاطئ
+- ❌ أخطاء الخادم
+
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\server.ts
+### مسار نسبي: src\server.ts
+// src/server.ts
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+// استيراد المسارات (لا يوجد تغيير هنا)
+import collegeRoutes from './modules/colleges/api/colleges.routes';
+import userRoutes from './modules/users/api/users.routes';
+import applicationRoutes from './modules/applications/api/applications.routes';
+
+// تحميل متغيرات البيئة
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+// --- Routes ---
+app.use('/api/v1/colleges', collegeRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/applications', applicationRoutes);
+
+app.get('/', (req, res) => {
+  res.send('Student Union API is running with MySQL + Prisma!');
+});
+
+// Error handling middleware
+app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Unhandled error:', error);
+  
+  // Prisma errors
+  if (error.code === 'P2002') {
+    return res.status(409).json({
+      message: 'البيانات المرسلة مكررة. يرجى التحقق من المعلومات المدخلة.',
+      code: 'DUPLICATE_DATA'
+    });
+  }
+  
+  if (error.code === 'P2025') {
+    return res.status(404).json({
+      message: 'العنصر المطلوب غير موجود.',
+      code: 'NOT_FOUND'
+    });
+  }
+  
+  // Default error response
+  res.status(500).json({
+    message: 'حدث خطأ داخلي في الخادم. يرجى المحاولة مرة أخرى لاحقاً.',
+    code: 'INTERNAL_SERVER_ERROR'
+  });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    message: 'المسار المطلوب غير موجود.',
+    code: 'NOT_FOUND'
+  });
+});
+
+// تشغيل السيرفر مباشرة بدون انتظار اتصال قاعدة البيانات
+// Prisma تقوم بإدارة الاتصالات تلقائيًا عند كل استعلام
+app.listen(port, () => {
+  console.log(`✅ Server is running on http://localhost:${port}`);
+});
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\core\prisma-client.ts
+### مسار نسبي: src\core\prisma-client.ts
+// src/core/prisma-client.ts
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export default prisma;
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\core\middleware\validate.ts
+### مسار نسبي: src\core\middleware\validate.ts
+import { Request, Response, NextFunction } from 'express';
+import { ZodObject, ZodError } from 'zod';
+
+export const validate = (schema: ZodObject<any>) => 
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await schema.parseAsync({
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      });
+      return next();
+    } catch (error) {
+      // التحقق من أن الخطأ هو من نوع ZodError قبل التعامل معه
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          message: "Input validation failed",
+          // .flatten() لتنظيم الأخطاء بشكل يسهل قراءته في الواجهة الأمامية
+          errors: error.flatten().fieldErrors,
+        });
+      }
+      
+      // إذا كان الخطأ من نوع آخر غير متوقع، مرره إلى معالج الأخطاء العام
+      // (سنقوم ببنائه لاحقًا)
+      next(error);
+    }
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\applications\api\applications.routes.ts
+### مسار نسبي: src\modules\applications\api\applications.routes.ts
+import { Router } from 'express';
+import { validate } from '../../../core/middleware/validate';
+import { createApplicationSchema, updateApplicationStatusSchema } from '../validators/application.validator';
+import { 
+    createApplicationHandler, 
+    getAllApplicationsHandler, 
+    getApplicationByIdHandler, 
+    updateApplicationStatusHandler,
+    validatePhoneNumberHandler
+} from '../controllers/applications.controller';
+import { protect, restrictTo } from '../../users/controllers/auth.middleware';
+
+const router = Router();
+
+// --- مسار عام ---
+// أي شخص يمكنه تقديم طلب
+router.post('/', validate(createApplicationSchema), createApplicationHandler);
+
+// التحقق من رقم الهاتف (مسار عام)
+router.post('/validate-phone', validatePhoneNumberHandler);
+
+// --- مسارات محمية للمدير ---
+router.use(protect, restrictTo('admin'));
+
+router.get('/', getAllApplicationsHandler);
+router.get('/:id', getApplicationByIdHandler);
+router.patch('/:id', validate(updateApplicationStatusSchema), updateApplicationStatusHandler);
+
+export default router;
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\applications\controllers\applications.controller.ts
+### مسار نسبي: src\modules\applications\controllers\applications.controller.ts
+import { Request, Response, NextFunction } from 'express';
+import * as appService from '../services/applications.service';
+
+export const createApplicationHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const application = await appService.submitApplication(req.body);
+        res.status(201).json({ 
+            message: 'تم إرسال الطلب بنجاح!', 
+            applicationId: application.id,
+            status: 'success'
+        });
+    } catch (error: any) {
+        // معالجة خاصة لخطأ "رقم الهاتف مكرر" في Prisma + MySQL
+        if (error.code === 'P2002' && error.meta?.target?.includes('phoneNumber')) {
+            return res.status(409).json({ 
+                message: 'رقم الهاتف هذا مستخدم مسبقاً في طلب آخر. يرجى استخدام رقم هاتف مختلف.',
+                field: 'phoneNumber',
+                code: 'PHONE_NUMBER_EXISTS'
+            });
+        }
+        
+        // معالجة أخطاء Prisma الأخرى
+        if (error.code === 'P2002') {
+            return res.status(409).json({ 
+                message: 'البيانات المرسلة مكررة. يرجى التحقق من المعلومات المدخلة.',
+                code: 'DUPLICATE_DATA'
+            });
+        }
+        
+        console.error('Application creation error:', error);
+        next(error);
+    }
+};
+
+export const getAllApplicationsHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const applications = await appService.getAllApplications();
+        res.status(200).json(applications);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getApplicationByIdHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const app = await appService.getApplicationById(req.params.id);
+        if (!app) return res.status(404).json({ message: 'Application not found' });
+        res.status(200).json(app);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateApplicationStatusHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const app = await appService.updateApplicationStatus(req.params.id, req.body.status);
+        if (!app) return res.status(404).json({ message: 'Application not found' });
+        res.status(200).json(app);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const validatePhoneNumberHandler = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { phoneNumber } = req.body;
+        
+        if (!phoneNumber) {
+            return res.status(400).json({ 
+                message: 'رقم الهاتف مطلوب',
+                isValid: false 
+            });
+        }
+        
+        const exists = await appService.checkPhoneNumberExists(phoneNumber);
+        
+        res.status(200).json({
+            isValid: !exists,
+            message: exists ? 'رقم الهاتف مستخدم مسبقاً' : 'رقم الهاتف متاح'
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\applications\repositories\applications.repository.ts
+### مسار نسبي: src\modules\applications\repositories\applications.repository.ts
+// src/modules/applications/repositories/applications.repository.ts
+import prisma from '../../../core/prisma-client';
+// تعريف نوع البيانات القادمة لإنشاء طلب جديد
+export interface CreateApplicationData {
+  fullName: string;
+  phoneNumber: string;
+  college: string;
+  specialization: string;
+  academicYear: number;
+  interestedFields: string[];
+  hasExperience: boolean;
+  experienceDetails?: string;
+  portfolioLinks: string[];
+  equipmentDetails?: string;
+  reasonToJoin: string;
+}
+
+export const create = async (data: CreateApplicationData) => {
+  // أولاً، نحتاج للعثور على المجالات الموجودة أو إنشاؤها
+  const fieldConnections = await Promise.all(
+    data.interestedFields.map(async (fieldName) => {
+      // البحث عن المجال أو إنشاؤه إذا لم يكن موجوداً
+      const field = await prisma.field.upsert({
+        where: { name: fieldName },
+        update: {},
+        create: { name: fieldName },
+      });
+      return { id: field.id };
+    })
+  );
+
+  return prisma.application.create({
+    data: {
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+      college: data.college,
+      specialization: data.specialization,
+      academicYear: data.academicYear,
+      hasExperience: data.hasExperience,
+      experienceDetails: data.experienceDetails,
+      equipmentDetails: data.equipmentDetails,
+      reasonToJoin: data.reasonToJoin,
+      // إنشاء روابط المحفظة
+      portfolioLinks: {
+        create: data.portfolioLinks.map(linkUrl => ({ url: linkUrl })),
+      },
+      // ربط المجالات الموجودة
+      interestedFields: {
+        connect: fieldConnections,
+      },
+    },
+    include: {
+        interestedFields: true,
+        portfolioLinks: true,
+    }
+  });
+};
+
+export const findAll = () => {
+  return prisma.application.findMany({
+    orderBy: { createdAt: 'desc' },
+    // تضمين البيانات من الجداول المرتبطة
+    include: {
+      interestedFields: {
+        select: { name: true } // نختار فقط اسم المجال
+      },
+      portfolioLinks: {
+        select: { url: true } // نختار فقط رابط العمل
+      },
+    },
+  });
+};
+
+export const findById = (id: string) => {
+  return prisma.application.findUnique({
+    where: { id },
+    include: {
+      interestedFields: true,
+      portfolioLinks: true,
+    },
+  });
+};
+
+export const updateStatus = (id: string, status: 'accepted' | 'rejected') => {
+  return prisma.application.update({
+    where: { id },
+    data: { status },
+  });
+};
+
+// دالة للتحقق من وجود رقم الهاتف
+export const checkPhoneNumberExists = async (phoneNumber: string): Promise<boolean> => {
+  const existingApplication = await prisma.application.findUnique({
+    where: { phoneNumber },
+    select: { id: true }
+  });
+  return !!existingApplication;
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\applications\services\applications.service.ts
+### مسار نسبي: src\modules\applications\services\applications.service.ts
+// src/modules/applications/services/applications.service.ts
+import * as appRepo from '../repositories/applications.repository';
+import { CreateApplicationData } from '../repositories/applications.repository';
+
+// submitApplication الآن تستخدم النوع المعرف في المستودع
+export const submitApplication = async (data: CreateApplicationData) => {
+  // هنا يمكن إضافة أي منطق عمل، مثل إرسال بريد إلكتروني للتأكيد
+  return await appRepo.create(data);
+};
+
+export const getAllApplications = () => {
+  return appRepo.findAll();
+};
+
+export const getApplicationById = (id: string) => {
+  return appRepo.findById(id);
+};
+
+export const updateApplicationStatus = (id: string, status: 'accepted' | 'rejected') => {
+  return appRepo.updateStatus(id, status);
+};
+
+export const checkPhoneNumberExists = async (phoneNumber: string) => {
+  return await appRepo.checkPhoneNumberExists(phoneNumber);
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\applications\validators\application.validator.ts
+### مسار نسبي: src\modules\applications\validators\application.validator.ts
+import { z } from 'zod';
+
+export const createApplicationSchema = z.object({
+  body: z.object({
+    fullName: z.string().min(3, "Full name is required and must be at least 3 characters"),
+    phoneNumber: z.string().regex(/^09\d{8}$/, "Invalid Syrian phone number format"),
+    college: z.string().min(1, "College selection is required"),
+    specialization: z.string().min(1, "Specialization selection is required"),
+    academicYear: z.number().int().min(1).max(7, "Invalid academic year"),
+    interestedFields: z.array(z.string()).nonempty({ message: "You must select at least one field of interest" }),
+    hasExperience: z.boolean(),
+    experienceDetails: z.string().optional(),
+    // التأكد من أن الروابط هي URLs صالحة إذا تم تقديمها
+    portfolioLinks: z.array(z.string().url("One of the portfolio links is invalid")).optional(),
+    equipmentDetails: z.string().optional(),
+    reasonToJoin: z.string().min(20, "Reason must be at least 20 characters long"),
+  }),
+});
+
+export const updateApplicationStatusSchema = z.object({
+  body: z.object({
+    status: z.enum(['accepted', 'rejected'], {
+      message: 'Status is required and must be either accepted or rejected'
+    }),
+  }),
+  params: z.object({
+    id: z.string().min(1, "Application ID is required"),
+  }),
+});
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\colleges\api\colleges.routes.ts
+### مسار نسبي: src\modules\colleges\api\colleges.routes.ts
+import { Router } from 'express';
+import { validate } from '../../../core/middleware/validate';
+import { createCollegeSchema, updateCollegeSchema, collegeIdParamSchema } from '../validators/college.validator';
+import { 
+  createCollegeHandler, 
+  getAllCollegesHandler, 
+  getCollegeByIdHandler,
+  updateCollegeHandler,
+  deleteCollegeHandler
+} from '../controllers/colleges.controller';
+import { protect, restrictTo } from '../../users/controllers/auth.middleware';
+
+const router = Router();
+
+// --- المسارات العامة (لا تتطلب تسجيل الدخول) ---
+// أي شخص يمكنه جلب قائمة الكليات لعرضها في الفورم
+router.get('/', getAllCollegesHandler);
+router.get('/:id', validate(collegeIdParamSchema), getCollegeByIdHandler);
+
+
+// --- تطبيق طبقة الحماية على جميع المسارات القادمة ---
+// من هنا فصاعدًا، يجب على المستخدم أن يكون مسجلاً دخوله (لديه توكن صالح)
+router.use(protect);
+// ويجب أن يكون دوره "admin"
+router.use(restrictTo('admin'));
+
+
+// --- المسارات المحمية (تتطلب تسجيل الدخول وصلاحيات المدير) ---
+
+// POST /api/v1/colleges - إنشاء كلية جديدة (محمي)
+router.post('/', validate(createCollegeSchema), createCollegeHandler);
+
+// PUT /api/v1/colleges/:id - تحديث كلية محددة بالـ ID (محمي)
+router.put('/:id', validate(updateCollegeSchema), updateCollegeHandler);
+
+// DELETE /api/v1/colleges/:id - حذف كلية محددة بالـ ID (محمي)
+router.delete('/:id', validate(collegeIdParamSchema), deleteCollegeHandler);
+
+export default router;
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\colleges\controllers\colleges.controller.ts
+### مسار نسبي: src\modules\colleges\controllers\colleges.controller.ts
+import { Request, Response, NextFunction } from 'express';
+import * as collegeService from '../services/colleges.service';
+
+export const createCollegeHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const college = await collegeService.createCollege(req.body);
+    res.status(201).json(college);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllCollegesHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const colleges = await collegeService.getAllColleges();
+    res.status(200).json(colleges);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCollegeByIdHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const college = await collegeService.getCollegeById(req.params.id);
+    if (!college) {
+      return res.status(404).json({ message: 'College not found' });
+    }
+    res.status(200).json(college);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCollegeHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const college = await collegeService.updateCollege(req.params.id, req.body);
+    if (!college) {
+      return res.status(404).json({ message: 'College not found' });
+    }
+    res.status(200).json(college);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteCollegeHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const college = await collegeService.deleteCollege(req.params.id);
+    if (!college) {
+      return res.status(404).json({ message: 'College not found' });
+    }
+    res.status(204).send(); // 204 No Content هو الرد المناسب للحذف الناجح
+  } catch (error) {
+    next(error);
+  }
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\colleges\repositories\colleges.repository.ts
+### مسار نسبي: src\modules\colleges\repositories\colleges.repository.ts
+// src/modules/colleges/repositories/colleges.repository.ts
+import prisma from '../../../core/prisma-client';
+import { CollegeData } from '../services/colleges.service'; // سنعرف هذا النوع
+
+export const create = async (collegeData: CollegeData) => {
+  // Prisma تجعل إنشاء العلاقات سهلاً
+  return prisma.college.create({
+    data: {
+      name: collegeData.name,
+      specializations: {
+        create: collegeData.specializations.map(specName => ({ name: specName })),
+      },
+    },
+    include: {
+      specializations: true, // لإرجاع التخصصات مع الكلية الجديدة
+    },
+  });
+};
+
+export const findAll = async () => {
+  return prisma.college.findMany({
+    include: {
+      specializations: {
+        select: { name: true } // نختار فقط أسماء التخصصات
+      }
+    },
+  });
+};
+
+export const findById = async (id: string) => {
+  return prisma.college.findUnique({
+    where: { id },
+    include: {
+      specializations: true,
+    },
+  });
+};
+
+export const updateById = async (id: string, updateData: Partial<CollegeData>) => {
+  // تحديث الكلية والتخصصات يتطلب منطقًا أكثر تعقيدًا مع Prisma
+  // هذا مثال مبسط لتحديث اسم الكلية فقط
+  return prisma.college.update({
+    where: { id },
+    data: {
+      name: updateData.name,
+      // لتحديث التخصصات، ستحتاج إلى حذف القديم وإضافة الجديد في transaction
+    },
+  });
+};
+
+export const deleteById = async (id: string) => {
+  // بفضل `onDelete: Cascade` في المخطط، سيتم حذف التخصصات تلقائيًا
+  return prisma.college.delete({
+    where: { id },
+  });
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\colleges\services\colleges.service.ts
+### مسار نسبي: src\modules\colleges\services\colleges.service.ts
+// src/modules/colleges/services/colleges.service.ts
+import * as collegeRepository from '../repositories/colleges.repository';
+
+// هذا النوع يمثل البيانات القادمة من الواجهة الأمامية لإنشاء أو تحديث كلية
+export interface CollegeData {
+  name: string;
+  specializations: string[];
+}
+
+export const createCollege = async (collegeData: CollegeData) => {
+  return collegeRepository.create(collegeData);
+};
+
+export const getAllColleges = async () => {
+  return collegeRepository.findAll();
+};
+
+export const getCollegeById = async (id: string) => {
+  return collegeRepository.findById(id);
+};
+
+export const updateCollege = async (id: string, updateData: Partial<CollegeData>) => {
+  return collegeRepository.updateById(id, updateData);
+};
+
+export const deleteCollege = async (id: string) => {
+  return collegeRepository.deleteById(id);
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\colleges\validators\college.validator.ts
+### مسار نسبي: src\modules\colleges\validators\college.validator.ts
+import { z } from 'zod';
+
+export const createCollegeSchema = z.object({
+  body: z.object({
+    // الطريقة الصحيحة: استخدم .min(1, { message: "..." }) لجعل الحقل مطلوبًا
+    name: z.string().min(1, { message: 'College name is required' }),
+    specializations: z.array(z.string().min(1, { message: 'Specialization cannot be empty' }))
+      .nonempty({ message: 'At least one specialization is required' }),
+  }),
+});
+
+export const updateCollegeSchema = z.object({
+  body: z.object({
+    // عند التحديث، يمكن أن يكون الحقل اختياريًا (optional)
+    name: z.string().min(1, { message: 'College name must not be empty if provided' }).optional(),
+    specializations: z.array(z.string().min(1, { message: 'Specialization cannot be empty' }))
+      .nonempty({ message: 'At least one specialization is required' }).optional(),
+  }),
+  params: z.object({
+    id: z.string().min(1, { message: 'College ID is required' }),
+  }),
+});
+
+export const collegeIdParamSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, { message: 'College ID is required' }),
+  }),
+});
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\users\api\users.routes.ts
+### مسار نسبي: src\modules\users\api\users.routes.ts
+import { Router } from 'express';
+import { loginHandler } from '../controllers/auth.controller';
+
+const router = Router();
+
+router.post('/login', loginHandler);
+
+export default router;
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\users\controllers\auth.controller.ts
+### مسار نسبي: src\modules\users\controllers\auth.controller.ts
+import { Request, Response, NextFunction } from 'express';
+import * as authService from '../services/auth.service';
+
+export const loginHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide email and password' });
+    }
+
+    const result = await authService.login(email, password);
+
+    if (!result) {
+      return res.status(401).json({ message: 'Incorrect email or password' });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      token: result.token,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\users\controllers\auth.middleware.ts
+### مسار نسبي: src\modules\users\controllers\auth.middleware.ts
+// src/modules/users/controllers/auth.middleware.ts
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import prisma from '../../../core/prisma-client';
+import { User } from '@prisma/client'; // استيراد نوع المستخدم مباشرة من Prisma Client
+
+// توسيع واجهة Request في Express لتشمل خاصية user من نوع Prisma
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User;
+    }
+  }
+}
+
+interface JwtPayload {
+  id: string;
+}
+
+export const protect = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1) الحصول على التوكن والتحقق من وجوده
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      return res.status(401).json({ message: 'You are not logged in! Please log in to get access.' });
+    }
+
+    // 2) التحقق من صحة التوكن
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+
+    // 3) التحقق من أن المستخدم ما زال موجودًا باستخدام Prisma
+    const currentUser = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+    
+    if (!currentUser) {
+      return res.status(401).json({ message: 'The user belonging to this token does no longer exist.' });
+    }
+
+    // تم التحقق بنجاح، أرفق المستخدم بالطلب
+    req.user = currentUser;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token. Please log in again.' });
+  }
+};
+
+// 4.2 Middleware للتحقق من الصلاحيات (Authorization)
+export const restrictTo = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // التحقق من صلاحية المستخدم المرفق بالطلب
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'You do not have permission to perform this action' });
+    }
+    next();
+  };
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\users\services\auth.service.ts
+### مسار نسبي: src\modules\users\services\auth.service.ts
+
+// src/modules/users/services/auth.service.ts
+import bcrypt from 'bcryptjs';
+import prisma from '../../../core/prisma-client'; // استيراد prisma client
+import { signToken } from '../utils/auth.utils';
+
+export const login = async (email: string, password: string): Promise<{ token: string } | null> => {
+  try {
+    console.log('🔍 Attempting login for email:', email);
+    
+    // 1) البحث عن المستخدم باستخدام Prisma client
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    console.log('👤 User found:', user ? 'Yes' : 'No');
+
+    if (!user) {
+      console.log('❌ User not found');
+      return null;
+    }
+
+    // 2) التحقق من وجود المستخدم ومقارنة كلمة المرور المشفرة
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log('🔐 Password valid:', isPasswordValid);
+
+    if (!isPasswordValid) {
+      console.log('❌ Invalid password');
+      return null;
+    }
+
+    // 3) إذا كان كل شيء صحيحًا، قم بإنشاء وإرجاع التوكن باستخدام id الخاص بـ Prisma
+    const token = signToken(user.id);
+    console.log('✅ Login successful, token generated');
+
+    return { token };
+  } catch (error) {
+    console.error('🚨 Login error:', error);
+    return null;
+  }
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\modules\users\utils\auth.utils.ts
+### مسار نسبي: src\modules\users\utils\auth.utils.ts
+// src/modules/users/utils/auth.utils.ts
+import jwt, { SignOptions, Secret } from 'jsonwebtoken';
+
+// تم تغيير نوع المعرف (id) من Types.ObjectId إلى string ليتوافق مع Prisma
+export const signToken = (id: string): string => {
+  const jwtSecret = process.env.JWT_SECRET as Secret | undefined;
+  const expiresIn = process.env.JWT_EXPIRES_IN as unknown as SignOptions['expiresIn'] | undefined;
+
+  if (!jwtSecret || !expiresIn) {
+    throw new Error('FATAL ERROR: JWT_SECRET or JWT_EXPIRES_IN is not defined.');
+  }
+  
+  // الكود المصحح: expiresIn يجب أن يكون مفتاحًا في الكائن الرئيسي
+  return jwt.sign({ id }, jwtSecret, { expiresIn });
+};
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\scripts\createAdmin.ts
+### مسار نسبي: src\scripts\createAdmin.ts
+// src/scripts/createAdmin.ts
+import { PrismaClient } from '@prisma/client';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+
+dotenv.config({ path: '.env' });
+
+const prisma = new PrismaClient();
+
+const createAdmin = async () => {
+  try {
+    console.log('Connecting to the database...');
+    
+    const adminEmail = 'tartousnuss@gmail.com';
+    const adminExists = await prisma.user.findUnique({
+      where: { email: adminEmail },
+    });
+
+    if (adminExists) {
+      console.log(`Admin user with email ${adminEmail} already exists.`);
+      return;
+    }
+
+    const adminPassword = 'tartousnuss123456tartousnuss';
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+
+    const newAdmin = await prisma.user.create({
+      data: {
+        email: adminEmail,
+        password: hashedPassword,
+        role: 'admin',
+      },
+    });
+
+    console.log('✅ Admin user created successfully!');
+    console.log(`   Email: ${newAdmin.email}`);
+    console.log(`   Password: ${adminPassword} (Use this password to log in)`);
+
+  } catch (error) {
+    console.error('❌ Error creating admin user:', error);
+  } finally {
+    await prisma.$disconnect();
+    console.log('Disconnected from the database.');
+  }
+};
+
+createAdmin();
+------------------------------------------------------------
+
+### ملف: D:\project\student-union\student-union-backend\src\scripts\seedFields.ts
+### مسار نسبي: src\scripts\seedFields.ts
+// src/scripts/seedFields.ts
+import { PrismaClient } from '@prisma/client';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env' });
+
+const prisma = new PrismaClient();
+
+// القائمة الصحيحة لمجالات الاهتمام التي تطابق الواجهة الأمامية
+const fieldsToSeed = [
+  { name: 'التصوير الفوتوغرافي والفيديو' },
+  { name: 'التعليق الصوتي والتقديم' },
+  { name: 'المونتاج وتحرير الفيديو' },
+  { name: 'التصميم الجرافيكي' },
+  { name: 'كتابة المحتوى الإعلامي' },
+  { name: 'إدارة وسائل التواصل الاجتماعي' },
+  { name: 'البث المباشر والتغطية الحية' },
+];
+
+async function main() {
+  console.log('🌱 Starting to seed the database with the CORRECT interested fields...');
+
+  for (const field of fieldsToSeed) {
+    await prisma.field.upsert({
+      where: { name: field.name },
+      update: {},
+      create: { name: field.name },
+    });
+    console.log(`✅ Upserted field: ${field.name}`);
+  }
+
+  console.log('🚀 Seeding finished successfully!');
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ An error occurred while seeding the database:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+    console.log('Disconnected from the database.');
+  });
+------------------------------------------------------------
+
