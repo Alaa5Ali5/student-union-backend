@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 إنشاء حساب Admin</h1>
+        <p class="subtitle">اتحاد طلاب جامعة النيلين</p>
+        
+        <div class="warning">
+            <strong>⚠️ تحذير هام:</strong>
+            استخدم هذه الصفحة مرة واحدة فقط لإنشاء حساب Admin الأول. بعد ذلك، احذف هذه الصفحة لأسباب أمنية.
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="createAdminForm">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني:</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="admin@nuss.edu.sd"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">كلمة المرور:</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="أدخل كلمة مرور قوية"
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="secretKey">المفتاح السري:</label>
+                <input 
+                    type="text" 
+                    id="secretKey" 
+                    name="secretKey" 
+                    placeholder="NUSS_ADMIN_2025_SECRET"
+                    required
+                    autocomplete="off"
+                >
+                <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                    المفتاح الافتراضي: NUSS_ADMIN_2025_SECRET
+                </small>
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                إنشاء حساب Admin
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('createAdminForm');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const secretKey = document.getElementById('secretKey').value;
+            
+            // إخفاء الرسائل السابقة
+            messageDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإنشاء...';
+            
+            try {
+                const response = await fetch('/api/v1/users/create-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password, secretKey })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = `
+                        <strong>✅ تم إنشاء الحساب بنجاح!</strong><br>
+                        البريد الإلكتروني: ${data.admin.email}<br>
+                        الصلاحية: ${data.admin.role}<br><br>
+                        <strong>⚠️ مهم:</strong> احذف هذه الصفحة الآن لأسباب أمنية!
+                    `;
+                    form.reset();
+                } else {
+                    throw new Error(data.message || 'حدث خطأ');
+                }
+            } catch (error) {
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+                messageDiv.innerHTML = `
+                    <strong>❌ خطأ:</strong> ${error.message}
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء حساب Admin';
+            }
+        });
+    </script>
+</body>
+</html>
+
