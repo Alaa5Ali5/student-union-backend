@@ -3,7 +3,6 @@
 import bcrypt from 'bcryptjs';
 import prisma from '../../../core/prisma-client'; // استيراد prisma client
 import { signToken } from '../utils/auth.utils';
-import { randomUUID } from 'crypto';
 
 export const login = async (email: string, password: string): Promise<{ token: string } | null> => {
   try {
@@ -38,37 +37,5 @@ export const login = async (email: string, password: string): Promise<{ token: s
   } catch (error) {
     console.error('🚨 Login error:', error);
     return null;
-  }
-};
-
-export const createAdmin = async (email: string, password: string) => {
-  try {
-    // التحقق من عدم وجود مستخدم بنفس البريد
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-
-    if (existingUser) {
-      throw new Error('Admin already exists');
-    }
-
-    // تشفير كلمة المرور
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // إنشاء المستخدم Admin
-    const admin = await prisma.user.create({
-      data: {
-        id: randomUUID(),
-        email,
-        password: hashedPassword,
-        role: 'admin'
-      }
-    });
-
-    console.log('✅ Admin created successfully:', admin.email);
-    return admin;
-  } catch (error) {
-    console.error('🚨 Error creating admin:', error);
-    throw error;
   }
 };

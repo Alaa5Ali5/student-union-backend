@@ -8,6 +8,9 @@ import collegeRoutes from './modules/colleges/api/colleges.routes';
 import userRoutes from './modules/users/api/users.routes';
 import applicationRoutes from './modules/applications/api/applications.routes';
 
+// استيراد دالة إنشاء Admin الافتراضي
+import { initDefaultAdmin } from './scripts/initDefaultAdmin';
+
 // تحميل متغيرات البيئة
 dotenv.config();
 
@@ -64,6 +67,9 @@ app.use('*', (req, res) => {
 
 // تشغيل السيرفر مباشرة بدون انتظار اتصال قاعدة البيانات
 // Prisma تقوم بإدارة الاتصالات تلقائيًا عند كل استعلام
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`✅ Server is running on http://localhost:${port}`);
+  
+  // إنشاء حساب Admin الافتراضي إذا لم يكن موجوداً
+  await initDefaultAdmin();
 });
