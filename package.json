@@ -7,10 +7,12 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "db:seed": "ts-node src/scripts/seedFields.ts",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate deploy",
+    "db:seed": "ts-node src/scripts/seedFields.ts",  
     "create-admin": "ts-node src/scripts/createAdmin.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "render-postbuild": "npm run db:seed"
+    "render-postbuild": "npm run db:generate && npm run db:migrate && npm run db:seed"
   },
   "author": "",
   "license": "ISC",

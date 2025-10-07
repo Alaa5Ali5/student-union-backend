@@ -3,7 +3,7 @@ services:
     name: student-union-backend
     env: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run build && npm run render-postbuild
     startCommand: npm start
     envVars:
       - key: NODE_ENV
