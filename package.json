@@ -2,11 +2,11 @@
   "name": "student-union-backend",
   "version": "1.0.0",
   "description": "Backend API for the Student Union application",
-  "main": "dist/server.js",
+  "main": "./dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node ./dist/server.js",
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate deploy",
     "db:seed": "ts-node src/scripts/seedFields.ts",  
