@@ -12,9 +12,12 @@ export const createCollegeHandler = async (req: Request, res: Response, next: Ne
 
 export const getAllCollegesHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('🏫 Fetching all colleges...');
     const colleges = await collegeService.getAllColleges();
+    console.log('✅ Colleges fetched:', colleges.length);
     res.status(200).json(colleges);
   } catch (error) {
+    console.error('❌ Error fetching colleges:', error);
     next(error);
   }
 };

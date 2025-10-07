@@ -17,9 +17,25 @@ const fieldsToSeed = [
   { name: 'live_streaming' },
 ];
 
-async function main() {
-  console.log('🌱 Starting to seed the database with English field identifiers...');
+// كليات افتراضية للبدء
+const collegesToSeed = [
+  { name: 'كلية الهندسة', academicYearsCount: 5 },
+  { name: 'كلية الطب', academicYearsCount: 7 },
+  { name: 'كلية الآداب', academicYearsCount: 4 },
+  { name: 'كلية العلوم', academicYearsCount: 4 },
+  { name: 'كلية الحقوق', academicYearsCount: 4 },
+  { name: 'كلية الاقتصاد', academicYearsCount: 4 },
+  { name: 'كلية الصيدلة', academicYearsCount: 5 },
+  { name: 'كلية طب الأسنان', academicYearsCount: 5 },
+  { name: 'كلية التربية', academicYearsCount: 4 },
+  { name: 'كلية الفنون الجميلة', academicYearsCount: 4 },
+];
 
+async function main() {
+  console.log('🌱 Starting to seed the database...');
+
+  // Seed Fields
+  console.log('📝 Seeding Fields...');
   for (const field of fieldsToSeed) {
     await prisma.field.upsert({
       where: { name: field.name },
@@ -27,6 +43,20 @@ async function main() {
       create: { name: field.name },
     });
     console.log(`✅ Upserted field: ${field.name}`);
+  }
+
+  // Seed Colleges
+  console.log('🏫 Seeding Colleges...');
+  for (const college of collegesToSeed) {
+    await prisma.college.upsert({
+      where: { name: college.name },
+      update: { academicYearsCount: college.academicYearsCount },
+      create: { 
+        name: college.name,
+        academicYearsCount: college.academicYearsCount,
+      },
+    });
+    console.log(`✅ Upserted college: ${college.name}`);
   }
 
   console.log('🚀 Seeding finished successfully!');
